@@ -12,5 +12,4 @@ class GameView(arcade.View):
         
         Actor()
 
-    for obstacle in Actor.obstacles_list:
-            obstacle.update()
+    

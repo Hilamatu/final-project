@@ -27,6 +27,9 @@ class Actor():
         # Spawn a new obstacle every 0.25 seconds
         arcade.schedule(self.add_obstacles, 0.50)
 
+        for obstacle in self.obstacles_list:
+            obstacle.update()
+
     
     def add_obstacles(self, delta_time: float):
         """ Adds a new obstacle to screen.
