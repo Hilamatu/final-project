@@ -1,14 +1,16 @@
 import arcade
-from arcade.color import RED
+from actor import Actor
 
 
 class GameView(arcade.View):
     def on_show(self):
         
         # Set the background color
-        arcade.set_background_color(arcade.color.WHITE)
+        arcade.set_background_color(arcade.color.LIGHT_BLUE)
         # Clear the screen and start drawing
         arcade.start_render()
+        
+        Actor()
 
-        # Draw a blue circle
-        arcade.draw_rectangle_filled(200, 200, 100, 300, RED)
+    for obstacle in Actor.obstacles_list:
+            obstacle.update()
