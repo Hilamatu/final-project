@@ -1,7 +1,6 @@
 import arcade
-from actor import Actor
 import random
-import constants
+from game import constants
 
 
 class GameView(arcade.View):
