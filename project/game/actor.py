@@ -5,7 +5,7 @@ import random
 from moving_sprites import MovingSprite
 import time
 
-class Actor():
+class Actor(arcade.View):
 
     def __init__(self):
 
@@ -30,17 +30,18 @@ class Actor():
         Arguments: 
             delta_time {float} -- How much time has passed since the last call """
 
+
         # First create the new obstacle sprite (Rather than creating a new Sprite, 
         # you create a new FlyingSprite to take advantage of the new .update())
         obstacle = MovingSprite(arcade.draw_rectangle_filled(center_x=random.randint(self.width, self.width + 10), center_y=self.height/3, width=100, height=60, color=arcade.color.RED))
+        
 
         # Sets  its speed to a random speed heading left 
-        obstacle.velocity = (-800, 100)
+        obstacle.velocity = (-50, 0)
 
         # Add it to the enemies list
         self.obstacles_list.append(obstacle)
         self.all_sprites.append(obstacle)
-
 
     def on_draw(self):
         """ Draw  all game objects
@@ -50,3 +51,4 @@ class Actor():
 
         arcade.start_render()
         self.all_sprites.draw()
+    
