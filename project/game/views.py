@@ -2,6 +2,7 @@ import arcade
 import arcade.gui
 import constants
 from game_view import GameView
+from actor import Actor
 
 
 class StartView(arcade.View):

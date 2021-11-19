@@ -6,9 +6,6 @@ from moving_sprites import MovingSprite
 import time
 
 class Actor():
-    """A class to create all the sprites for the game
-    
-    Stereotype: Information holder, Interface"""
 
     def __init__(self):
 
@@ -26,10 +23,6 @@ class Actor():
 
         # Spawn a new obstacle every 0.25 seconds
         arcade.schedule(self.add_obstacles, 0.50)
-
-        for obstacle in self.obstacles_list:
-            obstacle.update()
-
     
     def add_obstacles(self, delta_time: float):
         """ Adds a new obstacle to screen.
@@ -39,7 +32,7 @@ class Actor():
 
         # First create the new obstacle sprite (Rather than creating a new Sprite, 
         # you create a new FlyingSprite to take advantage of the new .update())
-        obstacle = arcade.Sprite(arcade.draw_rectangle_filled(center_x=random.randint(self.width, self.width + 10), center_y=self.height/3, width=100, height=60, color=arcade.color.RED))
+        obstacle = MovingSprite(arcade.draw_rectangle_filled(center_x=random.randint(self.width, self.width + 10), center_y=self.height/3, width=100, height=60, color=arcade.color.RED))
 
         # Sets  its speed to a random speed heading left 
         obstacle.velocity = (-800, 100)
@@ -57,5 +50,3 @@ class Actor():
 
         arcade.start_render()
         self.all_sprites.draw()
-
-        

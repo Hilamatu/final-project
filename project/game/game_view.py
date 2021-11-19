@@ -1,4 +1,5 @@
 import arcade
+from arcade.window_commands import finish_render
 from actor import Actor
 
 
@@ -11,5 +12,6 @@ class GameView(arcade.View):
         arcade.start_render()
         
         Actor()
+    finish_render
 
     
