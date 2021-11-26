@@ -4,6 +4,7 @@ from game.game_view import GameView
 player_score = 0
 
 class Score:
+    # the score increase by one when the player jump over a obstacle
     def __init__(self):
 
         
