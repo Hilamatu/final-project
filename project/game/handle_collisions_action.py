@@ -17,7 +17,7 @@ class HandleCollisionsAction(Action):
 
         
         
-        self.turn = 0
+        pass
 
     def on_obstacles_collision(self, obstacles, player, delta_time: float):
         
