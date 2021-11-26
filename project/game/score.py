@@ -1,6 +1,7 @@
 import arcade
 from game.game_view import GameView
 
+
 player_score = 0
 
 class Score:
@@ -21,7 +22,7 @@ class Score:
             player_score = 0
         else:
             player_score += 1
-            print(f"Score: {int(player_score)}", True, "black")
+            print(f"Score: {int(player_score)}", True, "black", x=100, y=20)
 
 
 
