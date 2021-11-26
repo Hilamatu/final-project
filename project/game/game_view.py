@@ -4,6 +4,7 @@ import random
 from arcade.draw_commands import draw_rectangle_filled
 from game import constants
 from game.moving_sprite import MovingSprite
+from game.handle_collisions_action import HandleCollisionsAction
 # from game.player import Player
 
 
@@ -145,6 +146,10 @@ class GameView(arcade.View):
             sprite.center_y = int (
                 sprite.center_y + sprite.change_y * delta_time
             )
+        
+        #cheking collisions
+        HandleCollisionsAction().on_obstacles_collision(self.obstacles, self.player, delta_time)
+        
         
         # Will update the physics_engine. It means updating the player position simulating the jump 
         # considering the values and parameters passed
