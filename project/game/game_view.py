@@ -1,14 +1,22 @@
 import arcade
 import random
-
-from arcade.draw_commands import draw_rectangle_filled
+import time
+from arcade.window_commands import finish_render, start_render
+from game.handle_collisions_action import HandleCollisionsAction
 from game import constants
 from game.moving_sprite import MovingSprite
-# from game.player import Player
+from game.lose_view import LoseView
+
 
 
 
 class GameView(arcade.View):
+        
+    """Displays the main window with the "Start Game" and "How to Play" button."""
+    def __init__(self):
+        """Since view does not support width and height, it just calls the parent init"""
+        super().__init__()
+        
     """The game view. Where everything will happen.
     Stereotype: interface, controller, information holder
     
@@ -29,7 +37,7 @@ class GameView(arcade.View):
         self.ground_list: Creates the spriteList to store the ground sprite separatedly to controll the jump
         self.physics_engine: Checks if the player is on ground and if .can_jump.
         """
-
+        
         # Set the background color
         arcade.set_background_color(arcade.color.LIGHT_BLUE)
         # Clear the screen and start drawing
@@ -150,6 +158,10 @@ class GameView(arcade.View):
         # considering the values and parameters passed
         self.physics_engine.update()
 
+        #cheking collisions
+        if HandleCollisionsAction().on_obstacles_collision(self.obstacles, self.player, delta_time):
+            time.sleep(2)
+            arcade.close_window()
         # Keep the player on the screen
         if self.player.right > constants.SCREEN_WIDTH:
             self.player.right = constants.SCREEN_WIDTH
