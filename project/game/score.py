@@ -22,7 +22,7 @@ class Score:
             player_score = 0
         else:
             player_score += 1
-            print(f"Score: {int(player_score)}", True, "black", x=100, y=20)
+            print(f"Score: {int(player_score)}")
 
 
 
