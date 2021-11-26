@@ -1,11 +1,12 @@
 import arcade
 import random
 import time
-from arcade.window_commands import finish_render, start_render
+import arcade.gui
+from arcade.text_pyglet import draw_text
 from game.handle_collisions_action import HandleCollisionsAction
 from game import constants
 from game.moving_sprite import MovingSprite
-from game.lose_view import LoseView
+
 
 
 
@@ -43,6 +44,8 @@ class GameView(arcade.View):
         # Clear the screen and start drawing
         arcade.start_render()
 
+        self.score = 0
+
         # Will schedule the method calling to 4
         arcade.schedule(self.add_obstacles, 4)
         self.obstacles = arcade.SpriteList() # Sprite List to store the obstacles
@@ -66,9 +69,8 @@ class GameView(arcade.View):
         # Will call the arcade.PhysicsEnginePlatformer passing the player, ground_list and gravity_constant as parameters
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player, self.ground_list, gravity_constant= constants.GRAVITY)
         
+        self.score_text = f"Score {self.score}"
         
-
-
 
     def add_obstacles(self, delta_time: int):
         """ Will create and to the sprite list all the obstacles randomly. 
@@ -135,10 +137,11 @@ class GameView(arcade.View):
 
     def on_draw(self):
         """ Will clean the view and draw everything"""
-
+        
         arcade.start_render()
         self.all_sprites.draw()
         self.ground_list.draw()
+        draw_text(text=str(self.score), start_x=100, start_y=20, font_size=24)
     
 
     def on_update(self, delta_time: float):
@@ -162,9 +165,43 @@ class GameView(arcade.View):
         if HandleCollisionsAction().on_obstacles_collision(self.obstacles, self.player, delta_time):
             time.sleep(2)
             arcade.close_window()
+
         # Keep the player on the screen
         if self.player.right > constants.SCREEN_WIDTH:
             self.player.right = constants.SCREEN_WIDTH
         if self.player.left < 0:
             self.player.left = 0
+
+        
+        # Score calculation
+        for obstacle in self.obstacles:
+            if obstacle.center_x == 0:
+                self.score += 10
+
+
+
+# class Score:
+#     # the score increases by one when the player jump over a obstacle
+#     def __init__(self):
+
+      
+#         pass
+#     # 
+#     #   position = (100, 20)
+
+#     # )
+#     def collisionDetection(player, player_score, brick, dog):
+#         if player.collide(brick):
+#             player_score = 0
+#         elif player.collide(dog):
+#             player_score = 0
+#         else:
+#             player_score += 1
+#             print(f"Score: {int(player_score)}")
+
+
+
+    
+    
+    
 
