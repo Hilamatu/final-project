@@ -5,6 +5,7 @@ class MovingSprite(arcade.Sprite):
 
 
     def udpate(self):
+
         """Update the position of the sprite
         when it moves off screen to the left, remove it """
 
@@ -12,6 +13,7 @@ class MovingSprite(arcade.Sprite):
         super().update()
 
         # remove it from screen
-        if self < 0:
+        if self < -10:
             self.remove_from_sprite_lists()
+
     
