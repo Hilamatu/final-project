@@ -6,6 +6,7 @@ from game import constants
 from game.moving_sprite import MovingSprite
 from game.handle_collisions_action import HandleCollisionsAction
 # from game.player import Player
+from game.score import Score
 
 
 
@@ -58,6 +59,8 @@ class GameView(arcade.View):
 
         # Will call the arcade.PhysicsEnginePlatformer passing the player, ground_list and gravity_constant as parameters
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player, self.ground_list, gravity_constant= constants.GRAVITY)
+
+        Score().collisionDetection(self.player_score)
         
         
 
@@ -161,3 +164,4 @@ class GameView(arcade.View):
         if self.player.left < 0:
             self.player.left = 0
 
+        
