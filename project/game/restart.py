@@ -1,13 +1,13 @@
-from game import constants
-from game import handle_collisions_action.py
-from game.action import Action
-#from game.game_view import GameView
 import arcade
+import random
+import time
 import arcade.gui
+from game.handle_collisions_action import HandleCollisionsAction
+from game import constants
+from game.moving_sprite import MovingSprite
 import pygame
 import sys
-  
-  
+    
 # initializing the constructor
 pygame.init()
   
@@ -56,8 +56,8 @@ while True:
             if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40:
                 pygame.restart()
                   
-    # fills the screen with a color
-    screen.fill((60,25,60))
+    # restarts the game
+    pygame.init()
       
     # stores the (x,y) coordinates into
     # the variable as a tuple
@@ -69,7 +69,7 @@ while True:
         pygame.draw.rect(screen,color_light,[width/2,height/2,140,40])
           
     else:
-        pygame.draw.rect(screen,color_dark,[width/2,height/2,140,40])
+        arcade.close_window()
       
     # superimposing the text onto our button
     screen.blit(text , (width/2+50,height/2))
