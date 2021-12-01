@@ -1,15 +1,19 @@
 import arcade
 import random
-
-from arcade.draw_commands import draw_rectangle_filled
+import time
+import arcade.gui
+from game.handle_collisions_action import HandleCollisionsAction
 from game import constants
 from game.moving_sprite import MovingSprite
-from game.handle_collisions_action import HandleCollisionsAction
-# from game.player import Player
-
 
 
 class GameView(arcade.View):
+        
+    """Displays the main window with the "Start Game" and "How to Play" button."""
+    def __init__(self):
+        """Since view does not support width and height, it just calls the parent init"""
+        super().__init__()
+        
     """The game view. Where everything will happen.
     Stereotype: interface, controller, information holder
     
@@ -30,11 +34,13 @@ class GameView(arcade.View):
         self.ground_list: Creates the spriteList to store the ground sprite separatedly to controll the jump
         self.physics_engine: Checks if the player is on ground and if .can_jump.
         """
-
+        
         # Set the background color
         arcade.set_background_color(arcade.color.LIGHT_BLUE)
         # Clear the screen and start drawing
         arcade.start_render()
+
+        self.score = 0
 
         # Will schedule the method calling to 4
         arcade.schedule(self.add_obstacles, 4)
@@ -59,9 +65,8 @@ class GameView(arcade.View):
         # Will call the arcade.PhysicsEnginePlatformer passing the player, ground_list and gravity_constant as parameters
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player, self.ground_list, gravity_constant= constants.GRAVITY)
         
+        self.score_text = f"Score {self.score}"
         
-
-
 
     def add_obstacles(self, delta_time: int):
         """ Will create and to the sprite list all the obstacles randomly. 
@@ -128,10 +133,11 @@ class GameView(arcade.View):
 
     def on_draw(self):
         """ Will clean the view and draw everything"""
-
+        
         arcade.start_render()
         self.all_sprites.draw()
         self.ground_list.draw()
+        arcade.draw_text(text=str(self.score), start_x=100, start_y=20, font_size=24)
     
 
     def on_update(self, delta_time: float):
@@ -155,9 +161,20 @@ class GameView(arcade.View):
         # considering the values and parameters passed
         self.physics_engine.update()
 
+        #cheking collisions
+        if HandleCollisionsAction().on_obstacles_collision(self.obstacles, self.player, delta_time):
+            time.sleep(2)
+            arcade.close_window()
+
         # Keep the player on the screen
         if self.player.right > constants.SCREEN_WIDTH:
             self.player.right = constants.SCREEN_WIDTH
         if self.player.left < 0:
             self.player.left = 0
+
+        
+        # Score calculation
+        for obstacle in self.obstacles:
+            if obstacle.center_x == 0:
+                self.score += 10
 
