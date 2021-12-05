@@ -57,7 +57,7 @@ class Director(arcade.Window):
       
         #Set the skater falling by gravity limit. 
         for x in range(0, constants.SCREEN_WIDTH, constants.SPRITE_SIZE):
-            ground = arcade.Sprite("skater/sprites/ground.png", constants.SCALING)
+            ground = arcade.Sprite("project/sprites/ground.png", constants.SCALING)
             ground.top = 50
             ground.left = x
             self.ground_list.append(ground)
@@ -198,7 +198,7 @@ class Director(arcade.Window):
     def add_background(self):
         """ Adds the first background when game starts
         """
-        self.static_background = arcade.Sprite("skater/sprites/background.png", constants.SCALING)
+        self.static_background = arcade.Sprite("project/sprites/background.png", constants.SCALING)
         self.static_background.bottom = 0
         self.static_background.left = 0
 
@@ -206,7 +206,7 @@ class Director(arcade.Window):
     def add_static_scene(self):
         """ Adds the first background when game starts
         """
-        self.static_scene = arcade.Sprite("skater/sprites/static_street.png", constants.SCALING)
+        self.static_scene = arcade.Sprite("project/sprites/static_street.png", constants.SCALING)
         self.static_scene.bottom = 0
         self.static_scene.left = 0
 

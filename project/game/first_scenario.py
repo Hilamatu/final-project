@@ -5,7 +5,7 @@ class First_scenario(arcade.Sprite):
 
     def __init__(self, y, velocity):
 
-        super().__init__("skater/sprites/firstscene.png", constants.SCALING)
+        super().__init__("project/sprites/firstscene.png", constants.SCALING)
         self.change_x = velocity
         self.bottom = y
         self.left = 0

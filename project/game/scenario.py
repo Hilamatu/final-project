@@ -10,7 +10,7 @@ class Scenario(arcade.Sprite):
         
         if condition:
             self.scenes = ["s2.png", "s3.png", "s4.png", "s5.png", "s6.png", "s7.png"]
-            super().__init__("skater/sprites/" + self.scenes[turn], constants.SCALING)
+            super().__init__("project/sprites/" + self.scenes[turn], constants.SCALING)
             self.change_x = velocity
             self.bottom = y
             self.left = constants.SCREEN_WIDTH

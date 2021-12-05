@@ -4,7 +4,7 @@ from game import constants
 class Skater(arcade.Sprite):
 
     def __init__(self):        
-        super().__init__("skater/sprites/skater.png", constants.SCALING)
+        super().__init__("project/sprites/skater.png", constants.SCALING)
         self.center_x = 80
         self.bottom = 52
 

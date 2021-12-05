@@ -13,7 +13,7 @@ JUMP_SPEED = 13
 GRAVITY = .9 
 
 #sounds
-SOUND_CRASH = "skater/sounds/crash.wav"
-SOUND_OUCH = "skater/sounds/ouch.wav"
-SOUND_JUMP = "skater/sounds/jump.wav"
+SOUND_CRASH = "project/sounds/crash.wav"
+SOUND_OUCH = "project/sounds/ouch.wav"
+SOUND_JUMP = "project/sounds/jump.wav"
 

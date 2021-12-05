@@ -4,7 +4,7 @@ from game import constants
 class School(arcade.Sprite):
 
     def __init__(self, y, velocity):        
-        super().__init__("skater/sprites/school.png", constants.SCALING)
+        super().__init__("project/sprites/school.png", constants.SCALING)
         self.change_x = velocity
         self.bottom = y
         self.left = constants.SCREEN_WIDTH * 3
