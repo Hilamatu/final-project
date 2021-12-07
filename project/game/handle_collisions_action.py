@@ -14,6 +14,7 @@ class HandleCollisionsAction:
     def on_obstacles_collision(self, obstacles, player, delta_time: float):
         
         if len(player.collides_with_list(obstacles)) > 0:
+            
             return True
             
             
