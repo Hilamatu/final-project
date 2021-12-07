@@ -1,8 +1,5 @@
 import arcade
-from game.director import Director
+from game import director
 
-
-
-director = Director()
-director.setup()
-arcade.run()
+main = director.main()
+ 
