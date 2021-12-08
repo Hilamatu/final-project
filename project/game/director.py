@@ -112,9 +112,8 @@ class Director(arcade.View):
         arcade.schedule(self.add_obstacle, 1)
         arcade.schedule(self.add_scenario, 8)
 
-        arcade.play_sound(self.sound_background)
-        if self.lives == 0:
-            arcade.stop_sound()
+        self.music = arcade.play_sound(self.sound_background)
+        self.music
 
         arcade.schedule(self.add_medicine, random.randint(8, 15))
         
@@ -184,6 +183,7 @@ class Director(arcade.View):
             arcade.play_sound(self.sound_crash)
 
             if self.lives == 0:
+                arcade.stop_sound(self.music)
                 arcade.play_sound(self.sound_crash)
                 time.sleep(1)
                 game_over_view = GameOverView()
@@ -350,6 +350,7 @@ class GameOverView(arcade.View):
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.P:
+            arcade.stop_sound()
             global score
             score = 0
             game_view = Director()
