@@ -10,7 +10,7 @@ SCREEN_HEIGHT = 720
 TITLE = "Skater"
 
 SPEED = 5
-JUMP_SPEED = 14.5
+JUMP_SPEED = 15
 GRAVITY = .9 
 
 #sounds
