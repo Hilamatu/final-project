@@ -31,10 +31,10 @@ class MenuView(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Welcome to SKATER", WIDTH / 2, HEIGHT / 2,
-        arcade.color.BLACK, font_size=50, anchor_x="center", font_name="Kenney Blocks")
-        arcade.draw_text("Hit ENTER to start the game or H for help and Q to quit the game", WIDTH / 2, HEIGHT / 2 - 75,
-        arcade.color.GRAY, font_size=20, anchor_x="center")
+        start_background = arcade.Sprite("project/sprites/start.jpg", constants.SCALING)
+        start_background.center_x = constants.SCREEN_WIDTH / 2
+        start_background.center_y = constants.SCREEN_HEIGHT / 2
+        start_background.draw()
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.H:
@@ -47,37 +47,27 @@ class MenuView(arcade.View):
             arcade.close_window()
 
 
+
+
 class InstructionView(arcade.View):
     def on_show(self):
-        arcade.set_background_color(arcade.color.SKY_BLUE)
         self.width = WIDTH/2
         self.new_line = 45
 
-
     def on_draw(self):
         arcade.start_render()
-        text = "Hurry up, you need to get to school in time!\n"\
-        "But be careful, there are many obstacle in the way!\n"\
-        "\n"\
-        "Instruction:\n"\
-        "You need to jump over the obstacles and arrive to the school.\n"\
-        "You have 5 lives and if you collide with an obstacle, you will lose 1 life and 30 points.\n"\
-        "\n"\
-        "Commands list: \n"\
-        "- Arrows: Move to the right or left\n"\
-        "- Space: Jump "
-        start_y = 660
-        arcade.draw_text(text, 640, start_y,
-                         arcade.color.BLACK, font_size=30, anchor_x="center",multiline=True, width=900)
-
-        arcade.draw_text("Hit R to return to main menu", WIDTH / 2, 80,
-                         arcade.color.GRAY, font_size=35, anchor_x="center")
-
+        instructions_background = arcade.Sprite("project/sprites/instructions.jpg", constants.SCALING)
+        instructions_background.center_x = constants.SCREEN_WIDTH / 2
+        instructions_background.center_y = constants.SCREEN_HEIGHT / 2
+        instructions_background.draw()
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.R:
             menu_view = MenuView()
             self.window.show_view(menu_view)
+
+
+
 
 class Director(arcade.View):
     def __init__(self):
@@ -96,7 +86,7 @@ class Director(arcade.View):
         self.skater = None
         self.obstacle = None
         self.score_text = None        
-        self.lives = 5
+        self.lives = constants.LIVES
         self.lives_text = None
         self.scene_turn = 0
         self.static_background = None
@@ -104,20 +94,22 @@ class Director(arcade.View):
         self.round = 0
         self.school = None
         self.stop = True
+        self.medicine = None
     
 
         #sounds
         self.sound_crash = arcade.load_sound(constants.SOUND_OUCH)
+        self.sound_live = arcade.load_sound(constants.SOUND_LIVE)
         self.sound_jump = arcade.load_sound(constants.SOUND_JUMP)
         self.sound_riding = arcade.load_sound(constants.SOUND_RIDING)
 
     def on_show(self):
-        arcade.set_background_color(arcade.color.LIGHT_BLUE)
-
-    # def setup(self):
+        arcade.set_background_color(arcade.color.LIGHT_BLUE)    
         self.skater = Skater()
         arcade.schedule(self.add_obstacle, 1)
         arcade.schedule(self.add_scenario, 8)
+        
+        arcade.schedule(self.add_medicine, random.randint(8, 15))
         
         self.add_background()
         self.add_static_scene()
@@ -132,9 +124,9 @@ class Director(arcade.View):
             ground.left = x
             self.ground_list.append(ground)
             self.physics_engine = arcade.PhysicsEnginePlatformer(self.skater, self.ground_list, gravity_constant= constants.GRAVITY) 
+
     def on_draw(self):
-        arcade.start_render()
-              
+        arcade.start_render()              
         self.static_background.draw()
         self.static_scene.draw()
         self.first_scenario_list.draw()
@@ -142,6 +134,7 @@ class Director(arcade.View):
         self.school_list.draw()
         self.skater_list.draw()
         self.obstacles_list.draw()
+        self.medicine_list.draw()
         arcade.draw_text(text = str(self.score_text),
                         color = (105, 105, 105),
                         start_x = constants.SCREEN_WIDTH - 200,
@@ -163,20 +156,18 @@ class Director(arcade.View):
         self.first_scenario_list.update()
         self.scenario_list.update()
         self.physics_engine.update()
-        self.school_list.update()
-              
+        self.school_list.update()    
+        self.medicine_list.update()          
 
         self.score_text = f"SCORE: {score}"
         self.lives_text = f"LIVES: {self.lives}"
       
         hit_list = arcade.check_for_collision_with_list(self.skater, self.obstacles_list)
         if hit_list:
-            self.lives -= 1
-                           
+            self.lives -= 1                           
             self.skater.center_y = 700 # We have to imporve this
             score -= 30
-            arcade.play_sound(self.sound_crash)
-        
+            arcade.play_sound(self.sound_crash)        
             if self.lives == 0:
                 arcade.play_sound(self.sound_crash)
                 time.sleep(1)
@@ -187,9 +178,18 @@ class Director(arcade.View):
             if obstacle.left < 0:
                 score += 1
 
-        if len(self.school_list) >= 1 and self.school.change_x == 0:
+
+        if arcade.check_for_collision_with_list(self.skater, self.medicine_list) and self.lives < 5:
+            self.lives += 1
+            self.sound_live.play()
+            self.medicine_list.pop()
+
+        if len(self.school_list) > 0 and self.school.change_x == 0:
+            time.sleep(2)
             win = WinView()
             self.window.show_view(win)
+
+        
 
     def on_key_press(self, symbol, modifiers):
         """Handle user keyboard input
@@ -202,16 +202,12 @@ class Director(arcade.View):
         """
         if symbol == arcade.key.Q:
             arcade.close_window()
-        
+               
         elif symbol == arcade.key.LEFT:
-            self.skater.change_x = -8
-            if self.skater.bottom <= 53:
-                arcade.play_sound(self.sound_riding)
-
+            self.skater.change_x = - constants.SPEED
+       
         elif symbol == arcade.key.RIGHT:
-            self.skater.change_x = 8
-            if self.skater.bottom <= 53:
-                arcade.play_sound(self.sound_riding)
+            self.skater.change_x = constants.SPEED
     
         elif symbol == arcade.key.SPACE:
             if self.physics_engine.can_jump():
@@ -248,6 +244,18 @@ class Director(arcade.View):
             self.add_school()
         else:
             pass
+
+
+    def add_medicine(self, delta_time: float):
+        """ Adds a new medicine to screen.
+        """
+        if self.round < constants.ROUNDS:
+            self.medicine = Medicine(-10)
+            self.medicine_list.append(self.medicine)
+        else:
+            pass
+        
+       
             
             
     def add_scenario(self, delta_time: float):
@@ -298,30 +306,31 @@ class Director(arcade.View):
         self.school = School(0, -10)
         self.school_list.append(self.school)
 
+        
+
 
 class GameOverView(arcade.View):
     def on_show(self):
-        arcade.set_background_color(arcade.color.SKY_BLUE)
         self.width = WIDTH/2
         self.new_line = 45
 
 
     def on_draw(self):
-        global score
-        arcade.start_render()
-        text = "Game Over"
-
-        arcade.draw_text(text, WIDTH / 2, HEIGHT / 2,
-                         arcade.color.BLACK, font_size=70, anchor_x="center", font_name="Kenney Blocks")
-        
-        total_score = f"Total Score: {score}"
-
-        arcade.draw_text(total_score, WIDTH / 2, HEIGHT / 2 - 90,
-                         arcade.color.BLACK, font_size=50, anchor_x="center")
-        
-
-        arcade.draw_text("Hit P to play again or Q to end the game",  WIDTH / 2, HEIGHT / 2 - 170,
-                         arcade.color.GRAY, font_size=35, anchor_x="center")
+            global score
+            arcade.start_render()
+            game_over_background = arcade.Sprite("project/sprites/game_over.jpg", constants.SCALING)
+            game_over_background.center_x = constants.SCREEN_WIDTH / 2
+            game_over_background.center_y = constants.SCREEN_HEIGHT / 2
+            game_over_background.draw()
+            
+            total_score = f"Total Score: {score}"
+            arcade.draw_text(text = total_score,
+                        color = (255, 255, 255),
+                        start_x = constants.SCREEN_WIDTH / 2 + 80,
+                        start_y = constants.SCREEN_HEIGHT / 8 * 5,
+                        font_size = 36,
+                        font_name = "calibri",
+                        bold = True)    
 
 
     def on_key_press(self, symbol, modifiers):
@@ -333,24 +342,30 @@ class GameOverView(arcade.View):
         elif symbol == arcade.key.Q:
             arcade.close_window()
 
-class WinView(arcade.View):
 
+
+
+class WinView(arcade.View):    
     def on_show(self):
-        arcade.set_background_color(arcade.color.SKY_BLUE)
         self.width = WIDTH/2
         self.new_line = 45
 
     def on_draw(self):
-
+        global score
         arcade.start_render()
-        text = "You've arrived the school!!"
-
-        arcade.draw_text(text, WIDTH / 2, HEIGHT / 2,
-                            arcade.color.BLACK, font_size=40, anchor_x="center", font_name="Kenney Blocks")
-    
-
-        arcade.draw_text("Hit P to play again or Q to end the game",  WIDTH / 2, HEIGHT / 2 - 170,
-                        arcade.color.GRAY, font_size=25, anchor_x="center")
+        win_background = arcade.Sprite("project/sprites/win.jpg", constants.SCALING)
+        win_background.center_x = constants.SCREEN_WIDTH / 2
+        win_background.center_y = constants.SCREEN_HEIGHT / 2
+        win_background.draw()
+        
+        total_score = f"Total Score: {score}"
+        arcade.draw_text(text = total_score,
+                    color = (255, 255, 255),
+                    start_x = constants.SCREEN_WIDTH / 2 + 80,
+                    start_y = constants.SCREEN_HEIGHT / 8 * 5,
+                    font_size = 36,
+                    font_name = "calibri",
+                    bold = True)    
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.P:
