@@ -19,6 +19,7 @@ SOUND_OUCH = "project/sounds/ouch.wav"
 SOUND_JUMP = "project/sounds/ollie.wav"
 SOUND_RIDING = "project/sounds/skate_sound.wav"
 SOUND_LIVE = "project/sounds/live.wav"
+BACK_GROUND = "project/sounds/background_music.wav"
 
 #the enemy motorcyclist will appear at every X amount of obstacles
 MOTORCYCLIST_PERIOD = 20

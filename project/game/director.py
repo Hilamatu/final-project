@@ -16,6 +16,7 @@ from game.school import School
 
 WIDTH = constants.SCREEN_WIDTH
 HEIGHT = constants.SCREEN_HEIGHT
+
 score = 0
 
 def main():
@@ -95,6 +96,7 @@ class Director(arcade.View):
         self.school = None
         self.stop = True
         self.medicine = None
+        self._gravity = constants.GRAVITY
     
 
         #sounds
@@ -102,14 +104,20 @@ class Director(arcade.View):
         self.sound_live = arcade.load_sound(constants.SOUND_LIVE)
         self.sound_jump = arcade.load_sound(constants.SOUND_JUMP)
         self.sound_riding = arcade.load_sound(constants.SOUND_RIDING)
+        self.sound_background = arcade.load_sound(constants.BACK_GROUND)
 
     def on_show(self):
         arcade.set_background_color(arcade.color.LIGHT_BLUE)    
         self.skater = Skater()
         arcade.schedule(self.add_obstacle, 1)
         arcade.schedule(self.add_scenario, 8)
-        
+
+        arcade.play_sound(self.sound_background)
+        if self.lives == 0:
+            arcade.stop_sound()
+
         arcade.schedule(self.add_medicine, random.randint(8, 15))
+        
         
         self.add_background()
         self.add_static_scene()
@@ -123,7 +131,11 @@ class Director(arcade.View):
             ground.top = 50
             ground.left = x
             self.ground_list.append(ground)
-            self.physics_engine = arcade.PhysicsEnginePlatformer(self.skater, self.ground_list, gravity_constant= constants.GRAVITY) 
+            self.physics_engine = arcade.PhysicsEnginePlatformer(self.skater, self.ground_list, gravity_constant= self._gravity) 
+
+        
+         
+            
 
     def on_draw(self):
         arcade.start_render()              
@@ -157,27 +169,30 @@ class Director(arcade.View):
         self.scenario_list.update()
         self.physics_engine.update()
         self.school_list.update()    
-        self.medicine_list.update()          
+        self.medicine_list.update()         
 
         self.score_text = f"SCORE: {score}"
         self.lives_text = f"LIVES: {self.lives}"
       
-        hit_list = arcade.check_for_collision_with_list(self.skater, self.obstacles_list)
-        if hit_list:
-            self.lives -= 1                           
+        self.hit_list = arcade.check_for_collision_with_list(self.skater, self.obstacles_list)
+        if self.hit_list:
+            
+            self.lives -= 1
+            self.skater.velocity[1] = 0                           
             self.skater.center_y = 700 # We have to imporve this
             score -= 30
-            arcade.play_sound(self.sound_crash)        
+            arcade.play_sound(self.sound_crash)
+
             if self.lives == 0:
                 arcade.play_sound(self.sound_crash)
                 time.sleep(1)
                 game_over_view = GameOverView()
                 self.window.show_view(game_over_view)
-
+                
         for obstacle in self.obstacles_list:
             if obstacle.left < 0:
                 score += 1
-
+        
 
         if arcade.check_for_collision_with_list(self.skater, self.medicine_list) and self.lives < 5:
             self.lives += 1
@@ -236,7 +251,7 @@ class Director(arcade.View):
         Arguments: 
             delta_time {float} -- The time has passed since last call """
         if self.round < constants.ROUNDS:
-            x = random.randint(40, 300)
+            x = random.randint(900, 1280)
             self.obstacle = Obstacles(40, x, -10)
             self.obstacles_list.append(self.obstacle)
             self.round += 1
