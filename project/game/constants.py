@@ -5,6 +5,7 @@ SCALING = 1
 SPRITE_SIZE = 90
 LIVES = 5
 
+
 # Screen size
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
@@ -32,6 +33,7 @@ VOLUME_ENEMY = 1
 
 # Moving obstacles
 ENEMY_PERIOD = 10
+
 
 
 

@@ -139,9 +139,10 @@ class Director(arcade.View):
         self._gravity = constants.GRAVITY    
         self.enemy = None
         self.enemy_period = constants.ENEMY_PERIOD
-        self.remaining_obstacles = constants.ROUNDS
+        self.remaining_obstacles = constants.ROUNDS * 10 + 100
         self.remaining_text = None
         self.out_of_screen = False
+        self.turn_distance = 0
         
 
         # Variables to handle the sounds
@@ -221,10 +222,12 @@ class Director(arcade.View):
         # Makes the remaining obstacles to be update and displayed during the game
         arcade.draw_text(text = str(self.remaining_text),
                         color = (105, 105, 105),
-                        start_x = WIDTH/3,
+                        start_x = 0,
                         start_y = constants.SCREEN_HEIGHT - 50,
-                        font_size = 24, font_name = "calibri",
-                        bold = True)
+                        font_size = 22, font_name = "calibri",
+                        bold = True,
+                        width= WIDTH,
+                        align="center")
         
 
     def on_update(self, delta_time):
@@ -248,7 +251,7 @@ class Director(arcade.View):
         # Creates the text to be displayed for score, lives and, remaining obstacles  
         self.score_text = f"SCORE: {score}"
         self.lives_text = f"LIVES: {self.lives}"
-        self.remaining_text = f"REMAINING OBSTACLES: {self.remaining_obstacles}"
+        
       
         
         # Checks if there was a collision with obstacles by calling the arcade check_for_collision_with_list
@@ -344,12 +347,18 @@ class Director(arcade.View):
             # Change the view to the winview
             win = WinView()
             self.window.show_view(win)
+
+        if len(self.school_list) > 0 and self.turn_distance == 0:
+            self.remaining_text = "WELL DONE! YOU ARE GETTING TO SCHOOL"
+            self.turn_distance = 1
+        elif self.turn_distance == 0:
+            self.remaining_text = f"DISTANCE TO SCHOOL: {self.remaining_obstacles} METERS"   
         
         # Will add the moving obstacle
         if self.enemy_period == self.round:
             self.add_enemy()
             self.sound_enemy.play()
-            self.enemy_period *= 2
+            self.enemy_period += constants.ENEMY_PERIOD
 
         
 
@@ -407,9 +416,9 @@ class Director(arcade.View):
             self.obstacle = Obstacles(40, -10)
             self.obstacles_list.append(self.obstacle)
             self.round += 1
-            self.remaining_obstacles -= 1
+            self.remaining_obstacles -= 10
         elif len(self.school_list) < 1:
-            self.add_school()
+            self.add_school()            
         else:
             pass
 
