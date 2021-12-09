@@ -283,7 +283,7 @@ class Director(arcade.View):
                     pass
 
 
-        if len(self.enemy_list) > 0:
+        if len(self.enemy_list) > 0 and self.enemy.right > 20 and self.enemy.right < constants.SCREEN_WIDTH:
             for item in self.obstacles_list:
                 if arcade.check_for_collision(self.enemy, item):
                     """If there is something inside the list, it will return True and the code below will be executed"""
