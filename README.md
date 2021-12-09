@@ -1,7 +1,7 @@
 
 # Skater
 You are a skater that needs to get to the school in time. But Be careful there are many obstacles on your way.
-Jump over the obstacles and get to the school. And remember, you only have 5 lives.
+Jump over the obstacles and avoid being hit by vehicles to get to the school. And remember, you only have 5 lives.
 
 ## Getting Started
 ---

@@ -15,10 +15,10 @@ class Obstacles(arcade.Sprite):
         super().__init__("project/sprites/" + self._obstacle, constants.SCALING) # Super class to get the sprite 
         self.change_x = velocity # Velocity
         self.bottom = y
-        self.right = constants.SCREEN_WIDTH + self._plus_distance
+        self.left = constants.SCREEN_WIDTH + self._plus_distance
 
     def update(self):
         """Remove the obstacle when it goes off the screen""" 
-        if self.right < 0:
+        if self.right < 0 or self.top < 0 or self.bottom > 720:
             self.remove_from_sprite_lists()
         return super().update()

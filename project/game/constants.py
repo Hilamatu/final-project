@@ -24,6 +24,7 @@ SOUND_LIVE = "project/sounds/live.wav"
 SOUND_BACKGROUND = "project/sounds/background.wav"
 SOUND_ENEMY = "project/sounds/enemy.wav"
 SOUND_BELL = "project/sounds/bell.wav"
+SOUND_OBSTACLE = "project/sounds/collision.wav"
 
 VOLUME_BACKGROUND = 0.05
 VOLUME_EFFECTS = 1

@@ -146,6 +146,7 @@ class Director(arcade.View):
 
         # Variables to handle the sounds
         self.sound_crash = arcade.load_sound(constants.SOUND_OUCH)
+        self.sound_obstacle = arcade.load_sound(constants.SOUND_OBSTACLE)
         self.sound_live = arcade.load_sound(constants.SOUND_LIVE)
         self.sound_jump = arcade.load_sound(constants.SOUND_JUMP)
         self.sound_enemy = arcade.load_sound(constants.SOUND_ENEMY)
@@ -252,40 +253,52 @@ class Director(arcade.View):
         
         # Checks if there was a collision with obstacles by calling the arcade check_for_collision_with_list
         # Which will return a list if a collision occured.
-        if arcade.check_for_collision_with_list(self.skater, self.obstacles_list):  
-            """If there is something inside the list, it will return True and the code below will be executed"""
+        for item in self.obstacles_list:
+            if arcade.check_for_collision(self.skater, item):
+                """If there is something inside the list, it will return True and the code below will be executed"""
+                if item.bottom < 42:
+                    # Will take 1 life          
+                    self.lives -= 1
+                    # Will set the velocity that the skater will fall when appearing at position 700
+                    self.skater.velocity[1] = 10
+                    item.change_x = 20
+                    item.change_y = -20   
+                    # Reduce the score
+                    score -= 10
+                    # Plays the crash sound
+                    arcade.play_sound(self.sound_crash, volume=constants.VOLUME_EFFECTS)
 
-            # Will take 1 life          
-            self.lives -= 1
+                    # Will check if there is remaining life
+                    if self.lives == 0:
+                        # If there is non remaining life:
+                        # Stop the background sound
+                        arcade.stop_sound(self.music)
+                        arcade.play_sound(self.sound_crash, volume=constants.VOLUME_EFFECTS)
+                        # Sleep the function for 1 second
+                        time.sleep(1)
+                        # Display the Game over view
+                        game_over_view = GameOverView()
+                        self.window.show_view(game_over_view)
+                else:
+                    pass
 
-            # Will set the velocity that the skater will fall when appearing at position 700
-            self.skater.velocity[1] = 10   
-            # Will place the skater at position 700                        
-            self.skater.center_y = 700
 
-            # Reduce the score
-            score -= 30
-            # Plays the crash sound
-            arcade.play_sound(self.sound_crash, volume=constants.VOLUME_EFFECTS)
+        if len(self.enemy_list) > 0:
+            for item in self.obstacles_list:
+                if arcade.check_for_collision(self.enemy, item):
+                    """If there is something inside the list, it will return True and the code below will be executed"""
+                    item.change_x = 20
+                    item.change_y = 20                  
+                    # Plays the crash sound
+                    arcade.play_sound(self.sound_obstacle, volume=constants.VOLUME_EFFECTS)
 
-            # Will check if there is remaining life
-            if self.lives == 0:
-                # If there is non remaining life:
-                # Stop the background sound
-                arcade.stop_sound(self.music)
-                arcade.play_sound(self.sound_crash, volume=constants.VOLUME_EFFECTS)
-                # Sleep the function for 1 second
-                time.sleep(1)
-                # Display the Game over view
-                game_over_view = GameOverView()
-                self.window.show_view(game_over_view)
 
         # Checks if there was a collision withe the moving obstacles by calling the arcade check_for_collision_with_list
         # Which will return a list if a collision occured.
         if arcade.check_for_collision_with_list(self.skater, self.enemy_list):          
             self.lives -= 1
-            self.skater.velocity[1] = 10                  
-            self.skater.center_y = 700 # We have to imporve this
+            self.skater.left = 50
+            self.skater.bottom = 700
             score -= 30
             arcade.play_sound(self.sound_crash, volume=constants.VOLUME_EFFECTS)
             if self.lives == 0:
