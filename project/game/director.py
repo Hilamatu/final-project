@@ -284,7 +284,7 @@ class Director(arcade.View):
         # Which will return a list if a collision occured.
         if arcade.check_for_collision_with_list(self.skater, self.enemy_list):          
             self.lives -= 1
-            self.skater.velocity[1] = 10                   
+            self.skater.velocity[1] = 10                  
             self.skater.center_y = 700 # We have to imporve this
             score -= 30
             arcade.play_sound(self.sound_crash, volume=constants.VOLUME_EFFECTS)

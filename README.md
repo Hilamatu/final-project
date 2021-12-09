@@ -41,6 +41,3 @@ root                    (project root folder)
 ---
 Martin Sander - msander1987@gmail.com
 Hyrum Hilamatu - hyrum.hilamatu@gmail.com
-Stephanie Sarah - stephaniemelissal709@gmail.com
-Blake Hollingsworth - hol20048@byui.edu
-Charlet Mbizi charletmbizim@gmail.com
