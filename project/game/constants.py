@@ -1,14 +1,16 @@
 
+# Obstaces and medicine information
 ROUNDS = 60
 SCALING = 1
 SPRITE_SIZE = 90
 LIVES = 5
 
-
+# Screen size
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 TITLE = "Skater"
 
+# Physics information
 SPEED = 5
 JUMP_SPEED = 15
 GRAVITY = .9 
@@ -27,6 +29,7 @@ VOLUME_BACKGROUND = 0.05
 VOLUME_EFFECTS = 1
 VOLUME_ENEMY = 1
 
+# Moving obstacles
 ENEMY_PERIOD = 10
 
 
