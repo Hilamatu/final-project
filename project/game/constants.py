@@ -21,6 +21,7 @@ SOUND_RIDING = "project/sounds/skate_sound.wav"
 SOUND_LIVE = "project/sounds/live.wav"
 SOUND_BACKGROUND = "project/sounds/background.wav"
 SOUND_ENEMY = "project/sounds/enemy.wav"
+SOUND_BELL = "project/sounds/bell.wav"
 
 VOLUME_BACKGROUND = 0.05
 VOLUME_EFFECTS = 1

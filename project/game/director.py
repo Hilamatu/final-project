@@ -107,6 +107,7 @@ class Director(arcade.View):
         self.sound_live = arcade.load_sound(constants.SOUND_LIVE)
         self.sound_jump = arcade.load_sound(constants.SOUND_JUMP)
         self.sound_enemy = arcade.load_sound(constants.SOUND_ENEMY)
+        self.sound_bell = arcade.load_sound(constants.SOUND_BELL)
         self.sound_background = arcade.load_sound(constants.SOUND_BACKGROUND, streaming=True)
 
     def on_show(self):
@@ -215,6 +216,7 @@ class Director(arcade.View):
 
         if len(self.school_list) > 0 and self.school.change_x == 0:
             arcade.stop_sound(self.music)
+            self.sound_bell.play()
             time.sleep(2)
             win = WinView()
             self.window.show_view(win)
