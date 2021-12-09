@@ -99,7 +99,7 @@ class Director(arcade.View):
         self.medicine = None
         self._gravity = constants.GRAVITY    
         self.enemy = None
-        self.enemy_period = int(round(constants.ENEMY_PERIOD, 1)) 
+        self.enemy_period = constants.ENEMY_PERIOD
         
 
         #sounds
