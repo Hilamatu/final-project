@@ -1,5 +1,5 @@
 
-ROUNDS = 50
+ROUNDS = 60
 SCALING = 1
 SPRITE_SIZE = 90
 LIVES = 5
@@ -19,8 +19,15 @@ SOUND_OUCH = "project/sounds/ouch.wav"
 SOUND_JUMP = "project/sounds/ollie.wav"
 SOUND_RIDING = "project/sounds/skate_sound.wav"
 SOUND_LIVE = "project/sounds/live.wav"
-BACK_GROUND = "project/sounds/background_music.wav"
+SOUND_BACKGROUND = "project/sounds/background.wav"
+SOUND_ENEMY = "project/sounds/enemy.wav"
 
-#the enemy motorcyclist will appear at every X amount of obstacles
-MOTORCYCLIST_PERIOD = 20
+VOLUME_BACKGROUND = 0.05
+VOLUME_EFFECTS = 1
+VOLUME_ENEMY = 1
+
+ENEMY_PERIOD = ROUNDS * 0.18
+
+
+
 

@@ -11,6 +11,7 @@ from game.skater import Skater
 from game.medicine import Medicine
 from game.obstacles import Obstacles
 from game.school import School
+from game.enemy import Enemy
 
 
 
@@ -80,7 +81,7 @@ class Director(arcade.View):
         self.first_scenario_list = arcade.SpriteList()
         self.school_list = arcade.SpriteList()
         self.medicine_list = arcade.SpriteList()
-
+        self.enemy_list = arcade.SpriteList()
 
         self.first_scenario = None
         self.scenario = None        
@@ -96,26 +97,27 @@ class Director(arcade.View):
         self.school = None
         self.stop = True
         self.medicine = None
-        self._gravity = constants.GRAVITY
-    
+        self._gravity = constants.GRAVITY    
+        self.enemy = None
+        self.enemy_period = int(round(constants.ENEMY_PERIOD, 1)) 
+        
 
         #sounds
         self.sound_crash = arcade.load_sound(constants.SOUND_OUCH)
         self.sound_live = arcade.load_sound(constants.SOUND_LIVE)
         self.sound_jump = arcade.load_sound(constants.SOUND_JUMP)
-        self.sound_riding = arcade.load_sound(constants.SOUND_RIDING)
-        self.sound_background = arcade.load_sound(constants.BACK_GROUND)
+        self.sound_enemy = arcade.load_sound(constants.SOUND_ENEMY)
+        self.sound_background = arcade.load_sound(constants.SOUND_BACKGROUND, streaming=True)
 
     def on_show(self):
         arcade.set_background_color(arcade.color.LIGHT_BLUE)    
         self.skater = Skater()
-        arcade.schedule(self.add_obstacle, 1)
+        arcade.schedule(self.add_obstacle, 1.1)
         arcade.schedule(self.add_scenario, 8)
-
-        self.music = arcade.play_sound(self.sound_background)
-        self.music
-
         arcade.schedule(self.add_medicine, random.randint(8, 15))
+        
+
+        self.music = arcade.play_sound(self.sound_background, volume=constants.VOLUME_BACKGROUND, looping=True)
         
         
         self.add_background()
@@ -146,6 +148,7 @@ class Director(arcade.View):
         self.skater_list.draw()
         self.obstacles_list.draw()
         self.medicine_list.draw()
+        self.enemy_list.draw()
         arcade.draw_text(text = str(self.score_text),
                         color = (105, 105, 105),
                         start_x = constants.SCREEN_WIDTH - 200,
@@ -168,41 +171,58 @@ class Director(arcade.View):
         self.scenario_list.update()
         self.physics_engine.update()
         self.school_list.update()    
-        self.medicine_list.update()         
-
+        self.medicine_list.update()    
+        self.enemy_list.update()  
         self.score_text = f"SCORE: {score}"
         self.lives_text = f"LIVES: {self.lives}"
       
-        self.hit_list = arcade.check_for_collision_with_list(self.skater, self.obstacles_list)
-        if self.hit_list:
-            
+        
+        if arcade.check_for_collision_with_list(self.skater, self.obstacles_list):            
             self.lives -= 1
             self.skater.velocity[1] = 0                           
             self.skater.center_y = 700 # We have to imporve this
             score -= 30
-            arcade.play_sound(self.sound_crash)
-
+            arcade.play_sound(self.sound_crash, volume=constants.VOLUME_EFFECTS)
             if self.lives == 0:
                 arcade.stop_sound(self.music)
-                arcade.play_sound(self.sound_crash)
+                arcade.play_sound(self.sound_crash, volume=constants.VOLUME_EFFECTS)
                 time.sleep(1)
                 game_over_view = GameOverView()
                 self.window.show_view(game_over_view)
+
+
+
+        if arcade.check_for_collision_with_list(self.skater, self.enemy_list):          
+            self.lives -= 1
+            self.skater.velocity[1] = 0                           
+            self.skater.center_y = 700 # We have to imporve this
+            score -= 30
+            arcade.play_sound(self.sound_crash, volume=constants.VOLUME_EFFECTS)
+
+
                 
         for obstacle in self.obstacles_list:
             if obstacle.left < 0:
                 score += 1
         
 
-        if arcade.check_for_collision_with_list(self.skater, self.medicine_list) and self.lives < 5:
-            self.lives += 1
-            self.sound_live.play()
+        if arcade.check_for_collision_with_list(self.skater, self.medicine_list):
+            if self.lives < 5:
+                self.lives += 1
+            arcade.play_sound(self.sound_live, volume=constants.VOLUME_EFFECTS)
             self.medicine_list.pop()
 
+
         if len(self.school_list) > 0 and self.school.change_x == 0:
+            arcade.stop_sound(self.music)
             time.sleep(2)
             win = WinView()
             self.window.show_view(win)
+
+        if self.enemy_period == self.round:
+            self.add_enemy()
+            self.sound_enemy.play()
+            self.enemy_period *= 2
 
         
 
@@ -227,7 +247,7 @@ class Director(arcade.View):
         elif symbol == arcade.key.SPACE:
             if self.physics_engine.can_jump():
                 self.skater.change_y = constants.JUMP_SPEED
-                arcade.play_sound(self.sound_jump)
+                arcade.play_sound(self.sound_jump, volume=constants.VOLUME_EFFECTS)
 
 
 
@@ -251,8 +271,7 @@ class Director(arcade.View):
         Arguments: 
             delta_time {float} -- The time has passed since last call """
         if self.round < constants.ROUNDS:
-            x = random.randint(900, 1280)
-            self.obstacle = Obstacles(40, x, -10)
+            self.obstacle = Obstacles(40, -10)
             self.obstacles_list.append(self.obstacle)
             self.round += 1
         elif len(self.school_list) < 1:
@@ -271,6 +290,15 @@ class Director(arcade.View):
             pass
         
        
+    
+    def add_enemy(self):
+        """ Adds an enemy to screen.
+        Arguments: 
+            delta_time {float} -- The time has passed since last call """
+        
+        self.enemy = Enemy(15)
+        self.enemy_list.append(self.enemy)
+        
             
             
     def add_scenario(self, delta_time: float):
@@ -350,7 +378,6 @@ class GameOverView(arcade.View):
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.P:
-            arcade.stop_sound()
             global score
             score = 0
             game_view = Director()
